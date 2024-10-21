@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>영화 검색</title>
+</head>
+<body>
+<h1>영화 검색</h1>
+
+<!-- 검색 폼 -->
+<form action="/movie" method="get">
+  <input type="text" name="title" placeholder="영화 제목을 입력하세요" required>
+  <button type="submit">검색</button>
+</form>
+
+<!-- 영화 목록 출력 -->
+<div th:if="${movieList}">
+  <h2>검색 결과:</h2>
+  <ul>
+    <li th:each="movie : ${movieList}">
+      <h3 th:text="${movie.getString('title')}"></h3>
+      <p th:text="${movie.getString('overview')}"></p>
+      <img th:src="${#strings.isEmpty(movie.getString('poster_path')) || movie.getString('poster_path') == 'null' ? '/static/images/default-poster.png' : 'https://image.tmdb.org/t/p/w500' + movie.getString('poster_path')}" alt="포스터" />
+    </li>
+  </ul>
+</div>
+</body>
+</html>
