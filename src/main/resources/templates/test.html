@@ -2,43 +2,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>통합 검색</title>
+    <title>통합 검색</title>
 </head>
 <body>
 <!-- 검색 폼 -->
 <form action="/search" method="get">
-  <input type="text" name="query" placeholder="검색해 임마!!!!" />
-  <button type="submit">검색</button>
+    <input type="text" name="query" placeholder="검색해 임마!!!!"/>
+    <button type="submit">검색</button>
 </form>
 
 <!-- 검색 결과 출력 -->
 <div th:if="${searchResults}">
-  <h2>검색 결과:</h2>
-  <ul>
-    <li th:each="result : ${searchResults}">
-      <div th:switch="${result.getString('media_type')}">
-        <!-- 영화일 경우 -->
-        <div th:case="'movie'">
-          <h3 th:text="${result.getString('title')}">영화 제목</h3>
-          <p th:text="${result.getString('overview')}">영화 설명</p>
-          <img th:src="${#strings.isEmpty(result.getString('poster_path')) || result.getString('poster_path') == 'null' ? '/static/images/default-poster.png' : 'https://image.tmdb.org/t/p/w500' + result.getString('poster_path')}" alt="영화 포스터" />
-        </div>
+    <h2>검색 결과:</h2>
+    <ul>
+        <li th:each="result : ${searchResults}">
+            <div th:switch="${result.getString('media_type')}">
+                <!-- 영화일 경우 -->
+                <div th:case="'movie'">
+                    <h3 th:text="${result.getString('title')}">영화 제목</h3>
+                    <p th:text="${result.getString('overview')}">영화 설명</p>
+                    <img th:src="${#strings.isEmpty(result.getString('poster_path')) || result.getString('poster_path') == 'null' ? '/static/images/default-poster.png' : 'https://image.tmdb.org/t/p/w500' + result.getString('poster_path')}"
+                         alt="영화 포스터"/>
+                </div>
 
-        <!-- TV 프로그램일 경우 -->
-        <div th:case="'tv'">
-          <h3 th:text="${result.getString('name')}">TV 프로그램 제목</h3>
-          <p th:text="${result.getString('overview')}">TV 프로그램 설명</p>
-          <img th:src="${#strings.isEmpty(result.getString('poster_path')) || result.getString('poster_path') == 'null' ? '/static/images/default-poster.png' : 'https://image.tmdb.org/t/p/w500' + result.getString('poster_path')}" alt="TV 프로그램 포스터" />
-        </div>
+                <!-- TV 프로그램일 경우 -->
+                <div th:case="'tv'">
+                    <h3 th:text="${result.getString('name')}">TV 프로그램 제목</h3>
+                    <p th:text="${result.getString('overview')}">TV 프로그램 설명</p>
+                    <img th:src="${#strings.isEmpty(result.getString('poster_path')) || result.getString('poster_path') == 'null' ? '/static/images/default-poster.png' : 'https://image.tmdb.org/t/p/w500' + result.getString('poster_path')}"
+                         alt="TV 프로그램 포스터"/>
+                </div>
 
-        <!-- 인물일 경우 -->
-        <div th:case="'person'">
-          <h3 th:text="${result.getString('name')}">인물 이름</h3>
-          <img th:src="${#strings.isEmpty(result.getString('profile_path')) || result.getString('profile_path') == 'null' ? '/static/images/default-profile.png' : 'https://image.tmdb.org/t/p/w500' + result.getString('profile_path')}" alt="프로필 사진" />
-        </div>
-      </div>
-    </li>
-  </ul>
+                <!-- 인물일 경우 -->
+                <div th:case="'person'">
+                    <h3 th:text="${result.getString('name')}">인물 이름</h3>
+                    <img th:src="${#strings.isEmpty(result.getString('profile_path')) || result.getString('profile_path') == 'null' ? '/static/images/default-profile.png' : 'https://image.tmdb.org/t/p/w500' + result.getString('profile_path')}"
+                         alt="프로필 사진"/>
+                </div>
+            </div>
+        </li>
+    </ul>
 </div>
 </body>
 </html>
