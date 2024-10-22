@@ -20,18 +20,18 @@ public class TestController {
         return "test"; // test.html 템플릿을 반환
     }
 
-    // 영화 검색을 처리
-    @GetMapping("/movie")
-    public String getMovieDetails(@RequestParam String title, Model model) {
-        // 영화 검색 결과를 가져옵니다.
-        String jsonResult = testService.searchMoviesByTitle(title);
+    // 검색을 처리 (영화, TV, 인물 통합 검색)
+    @GetMapping("/search")
+    public String getSearchResults(@RequestParam("query") String query, Model model) {
+        // 통합 검색 결과를 가져옵니다.
+        String jsonResult = testService.searchByQuery(query);
 
-        // JSON 데이터를 파싱하여 movieList에 추가
+        // JSON 데이터를 파싱하여 결과 목록에 추가
         JSONObject jsonResponse = new JSONObject(jsonResult);
         JSONArray results = jsonResponse.getJSONArray("results");
 
-        // 모델에 검색 결과를 추가
-        model.addAttribute("movieList", results);
+        // 모델에 검색 결과를 추가 (검색 결과 리스트를 넘겨줍니다)
+        model.addAttribute("searchResults", results);
         return "test"; // 검색 결과를 포함하여 test.html 템플릿을 반환
     }
 }
