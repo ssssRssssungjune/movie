@@ -14,21 +14,25 @@ java {
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral() // Maven Central 저장소 추가
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.json:json:20230227'
+    compileOnly 'org.projectlombok:lombok'                                             // Lombok (컴파일 시점)
+    annotationProcessor 'org.projectlombok:lombok'                                     // Lombok 어노테이션 프로세서
+    testCompileOnly 'org.projectlombok:lombok'                                         // Lombok (테스트에서 사용)
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
 
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()

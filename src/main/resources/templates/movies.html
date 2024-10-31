@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Movies</title>
+<!--    <link rel="stylesheet" href="/css/styles.css">-->
+</head>
+<body>
+
+<div class="container">
+    <h1>최근 추가된 영화</h1>
+    <div class="movie-section">
+        <div th:each="movie : ${recentMovies}" class="movie-card">
+            <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.posterPath}" alt="Movie Poster">
+            <h2 th:text="${movie.title}"></h2>
+            <p th:text="${movie.releaseDate}"></p>
+            <p th:text="${movie.overview}"></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
