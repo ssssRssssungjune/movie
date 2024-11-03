@@ -21,5 +21,7 @@ public class MovieDetails {
     private Double rating;
     private String releaseDate;
 
-
+    @OneToOne
+    @JoinColumn(name = "movie_id", referencedColumnName = "id", unique = true)
+    private Movie movie; // movie 테이블과 연관된 ID
 }
