@@ -6,32 +6,42 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<h2 th:text="'검색 결과: ' + ${query}"></h2>
+<div th:fragment="searchResults">
+    <h2 th:text="'검색 결과: ' + ${query}"></h2>
 
-<div id="search-results">
-    <div th:if="${noResults}">
-        <p>검색 결과가 없습니다.</p>
-    </div>
-    <div th:each="movie : ${searchResults}">
-        <p th:text="${movie.title}">영화 제목</p>
-        <button th:onclick="'/movies/select?movieId=' + ${movie.id}">이 영화 선택</button>
-    </div>
-</div>
+    <div id="search-results">
+        <!-- 검색 결과가 없을 때 -->
+        <div th:if="${noResults}">
+            <p>검색 결과가 없습니다.</p>
+        </div>
+
+        <!-- 검색 결과가 있을 때 -->
+        <div th:if="${!noResults}">
+            <!-- 간단한 제목과 설명 -->
+            <div th:each="result : ${searchResults}">
+                <h3 th:text="${result.title}">영화 제목</h3>
+                <p th:text="${result.overview != null ? result.overview : 'No description available.'}">영화 설명</p>
+            </div>
+
+            <!-- 영화 카드 상세 정보 -->
+            <div class="movie-list">
+                <div th:each="movie : ${searchResults}" class="movie-card">
+                    <h3 th:text="${movie.title}">영화 제목</h3>
+                    <img th:src="${movie.posterPath != null ? 'https://image.tmdb.org/t/p/w500/' + movie.posterPath : '/static/images/default-poster.png'}" alt="영화 포스터">
+                    <p>개봉 연도: <span th:text="${movie.releaseDate != null && !movie.releaseDate.isEmpty() ? movie.releaseDate.substring(0, 4) : 'N/A'}">N/A</span></p>
 
 
-<div class="movie-list">
-    <div th:each="movie : ${searchResults}" class="movie-card">
-        <h3 th:text="${movie.title}">영화 제목</h3>
-        <img th:src="${movie.posterPath != null ? 'https://image.tmdb.org/t/p/w500/' + movie.posterPath : '/static/images/default-poster.png'}" alt="영화 포스터">
-        <p>개봉 연도: <span th:text="${movie.releaseDate != null ? movie.releaseDate.substring(0, 4) : 'N/A'}">N/A</span></p>
-        <p>평점: <span th:text="${movie.rating != null ? movie.rating : 'N/A'}">N/A</span></p>
-        <p th:text="${movie.overview != null ? movie.overview : 'No description available.'}"></p>
+                    <p>평점: <span th:text="${movie.rating != null ? movie.rating : 'N/A'}">N/A</span></p>
+                    <p th:text="${movie.overview != null ? movie.overview : 'No description available.'}"></p>
 
-        <!-- 영화 선택 버튼 -->
-        <form action="/movies/select" method="post">
-            <input type="hidden" name="movieId" th:value="${movie.id}" />
-            <button type="submit">이 영화 선택</button>
-        </form>
+                    <!-- 영화 선택 버튼 -->
+                    <form action="/movies/select" method="post">
+                        <input type="hidden" name="movieId" th:value="${movie.id}" />
+                        <button type="submit">이 영화 선택</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

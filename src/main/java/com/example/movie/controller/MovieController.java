@@ -4,8 +4,8 @@ import com.example.movie.Movie;
 import com.example.movie.MovieDetails;
 import com.example.movie.dto.MovieDTO;
 import com.example.movie.dto.MovieResponse;
-import com.example.movie.repositories.MovieRepository;
 import com.example.movie.repositories.MovieDetailsRepository;
+import com.example.movie.repositories.MovieRepository;
 import com.example.movie.service.FileIndexService;
 import com.example.movie.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,28 +90,37 @@ public class MovieController {
     }
 
     @PostMapping("/movies/select")
-    public String selectMovie(@RequestParam Long movieId) {
+    public String selectMovie(@RequestParam Long movieId, Model model) {
         MovieDTO movieData = fetchMovieDataFromTMDB(movieId);
         if (movieData != null) {
             saveOrUpdateMovie(movieId, movieData);
         }
-        return "redirect:/movies"; // 영화 목록 페이지로 리디렉션
+        return "redirect:/movies/list"; // 영화 목록 페이지로 리디렉션
     }
+
+
+
 
     @GetMapping("/movies/search/ajax")
     public String searchMovieAjax(@RequestParam String query, Model model) {
-        String url = String.format(
-                "https://api.themoviedb.org/3/search/movie?api_key=%s&query=%s&language=ko-KR",
-                tmdbApiKey, query
-        );
+        try {
+            String url = String.format(
+                    "https://api.themoviedb.org/3/search/movie?api_key=%s&query=%s&language=ko-KR",
+                    tmdbApiKey, URLEncoder.encode(query, "UTF-8")
+            );
 
-        MovieResponse response = restTemplate.getForObject(url, MovieResponse.class);
-        if (response != null && !response.getResults().isEmpty()) {
-            model.addAttribute("searchResults", response.getResults());
-        } else {
-            model.addAttribute("noResults", true);
+            MovieResponse response = restTemplate.getForObject(url, MovieResponse.class);
+            if (response != null && !response.getResults().isEmpty()) {
+                model.addAttribute("searchResults", response.getResults());
+                model.addAttribute("noResults", false);  // 결과가 있을 때는 false 설정
+            } else {
+                model.addAttribute("noResults", true);  // 결과가 없을 때는 true 설정
+            }
+        } catch (Exception e) {
+            System.err.println("API 호출 중 오류 발생: " + e.getMessage());
+            model.addAttribute("noResults", true);  // 예외 발생 시에도 true 설정
         }
-        return "fragments/searchResults :: searchResults"; // 템플릿 조각 반환
+        return "searchResults :: searchResults";
     }
 
 

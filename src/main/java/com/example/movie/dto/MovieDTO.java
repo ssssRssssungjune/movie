@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 public class MovieDTO {
 
+    private Long id; // TMDB ID 필드 추가
+
     private String title;
     private String overview;
 

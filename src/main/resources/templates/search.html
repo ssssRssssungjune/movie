@@ -11,27 +11,22 @@
 <input type="text" id="movie-search-input" placeholder="영화 제목을 입력하세요">
 <div id="search-results"></div>
 
-<script>
-    $(document).ready(function() {
-        $("#movie-search-input").on("input", function() {
-            let query = $(this).val();
-            if (query.length > 2) { // 2글자 이상일 때만 검색
-                $.ajax({
-                    url: "/movies/search/ajax",
-                    type: "GET",
-                    data: { query: query },
-                    success: function(data) {
-                        $("#search-results").html(data);
-                    },
-                    error: function() {
-                        $("#search-results").html("<p>검색 중 오류가 발생했습니다.</p>");
-                    }
-                });
-            } else {
-                $("#search-results").empty(); // 입력이 2글자 미만일 때 결과 비움
+<script>$(document).ready(function() {
+    $('#searchButton').on('click', function() {
+        var query = $('#searchInput').val();
+        $.ajax({
+            url: '/movies/search/ajax',
+            type: 'GET',
+            data: { query: query },
+            success: function(response) {
+                $('#search-results').html(response);
+            },
+            error: function() {
+                alert('검색 중 오류가 발생했습니다.');
             }
         });
     });
-</script>
+});
+
 </body>
 </html>
