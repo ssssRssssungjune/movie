@@ -13,13 +13,14 @@
     <th:block th:each="movie : ${movies}">
         <div class="movie-card" th:data-title="${movie.title}">
             <h2 th:text="${movie.title.length() > 10 ? movie.title.substring(0, 10) + '...' : movie.title}">영화 제목</h2>
-            <img th:src="${movie.movieDetails != null && movie.movieDetails.posterPath != null ? 'https://image.tmdb.org/t/p/w500/' + movie.movieDetails.posterPath : '/static/images/default-poster.png'}"
-                 alt="영화 포스터" class="movie-poster" th:onclick="'openModal(' + ${movie.id} + ')'" />
+            <!-- 포스터 이미지에 링크 추가 -->
+            <a th:href="@{/selectDetails(movieId=${movie.id})}">
+                <img th:src="${movie.movieDetails != null && movie.movieDetails.posterPath != null ? 'https://image.tmdb.org/t/p/w500/' + movie.movieDetails.posterPath : '/static/images/default-poster.png'}"
+                     alt="영화 포스터" class="movie-poster" />
+            </a>
             <p>개봉 연도: <span th:text="${movie.movieDetails != null ? movie.movieDetails.releaseDate : 'N/A'}">YYYY</span></p>
             <p>평점: <span th:text="${movie.movieDetails != null ? movie.movieDetails.rating : 'N/A'}">0.0</span></p>
-
             <p th:utext="${#strings.abbreviate(movie.movieDetails != null ? movie.movieDetails.overview : 'No description available.', 100)}">줄거리</p>
-
             <button onclick="openSearchModal(this)">찾아보기</button>
         </div>
     </th:block>
@@ -33,16 +34,6 @@
         <input type="text" id="searchQuery" placeholder="영화 제목 입력">
         <button onclick="searchMovie()">검색</button>
         <div id="searchResults"></div>
-    </div>
-</div>
-
-<!-- 영화 상세 모달 창 (검색 모달 밖에 위치) -->
-<div id="movieModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 id="movieTitle">영화 제목</h2>
-        <p id="movieOverview">영화 설명이 여기에 표시됩니다.</p>
-        <!-- 추가적인 상세 정보를 여기에 표시 -->
     </div>
 </div>
 
@@ -78,23 +69,6 @@
                 }
             });
         }
-    }
-
-    // 영화 상세 모달 열기
-    function openModal(movieId) {
-        // 영화 정보 가져오기 (예: API 호출)
-        fetch(`/api/movies/${movieId}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("movieTitle").innerText = data.title;
-                document.getElementById("movieOverview").innerText = data.overview;
-                document.getElementById("movieModal").style.display = "block";
-            });
-    }
-
-    // 영화 상세 모달 닫기
-    function closeModal() {
-        document.getElementById("movieModal").style.display = "none";
     }
 </script>
 

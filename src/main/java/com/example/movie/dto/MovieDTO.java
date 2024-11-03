@@ -8,7 +8,9 @@ import lombok.Setter;
 @Setter
 public class MovieDTO {
 
-    private Long id; // TMDB ID 필드 추가
+    private Long id; // TMDB ID 필드
+
+    private Long tmdbId;
 
     private String title;
     private String overview;
@@ -20,5 +22,7 @@ public class MovieDTO {
     private String releaseDate;
 
     @JsonProperty("vote_average")
-    private Double rating;  // 평점 필드 추가
+    private Double rating;  // 평점 필드
+
+    private String filePath; // 파일 경로 필드
 }

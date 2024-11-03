@@ -28,6 +28,11 @@ public class MovieService {
         this.restTemplate = restTemplate;
     }
 
+    public Movie getMovieDetails(Long movieId) {
+        return movieRepository.findById(movieId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid movie ID: " + movieId));
+    }
+
     public void fetchAndSaveMovieDetails() {
         List<Movie> movies = movieRepository.findAll();
 
@@ -72,7 +77,6 @@ public class MovieService {
             }
         }
     }
-
 
     public List<Movie> getAllMoviesWithDetails() {
         return movieRepository.findAllMoviesWithDetails();

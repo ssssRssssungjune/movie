@@ -11,6 +11,7 @@ import com.example.movie.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class MovieController {
@@ -40,6 +40,14 @@ public class MovieController {
         this.movieRepository = movieRepository;
         this.movieDetailsRepository = movieDetailsRepository;
         this.restTemplate = restTemplate;
+    }
+
+    @GetMapping("/selectDetails")
+    public String showMovieDetails(@RequestParam("movieId") Long movieId, Model model) {
+        // movieId를 사용하여 영화 상세 정보를 가져옴
+        Movie movie = movieService.getMovieDetails(movieId);
+        model.addAttribute("movie", movie);
+        return "selectDetails";  // selectDetails.html 페이지로 이동
     }
 
     // 루트 경로와 기본 경로로 홈 화면을 보여주는 GET 요청
@@ -90,12 +98,39 @@ public class MovieController {
     }
 
     @PostMapping("/movies/select")
-    public String selectMovie(@RequestParam Long movieId, Model model) {
-        MovieDTO movieData = fetchMovieDataFromTMDB(movieId);
-        if (movieData != null) {
-            saveOrUpdateMovie(movieId, movieData);
-        }
-        return "redirect:/movies/list"; // 영화 목록 페이지로 리디렉션
+    public String selectMovie(@RequestParam Long movieId,
+                              @RequestParam String title,
+                              @RequestParam String releaseDate,
+                              @RequestParam Double rating,
+                              @RequestParam String overview,
+                              @RequestParam String posterPath,
+                              @RequestParam Long tmdbId) {
+        // Movie 엔티티를 업데이트
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + movieId));
+
+        // Movie 엔티티 업데이트
+        movie.setTitle(title);
+        movie.setReleaseDate(releaseDate);
+        movie.setRating(rating);
+        movie.setOverview(overview);
+        movie.setPosterPath(posterPath);
+        movie.setTmdbId(tmdbId); // tmdbId를 저장하는 메서드가 있어야 함
+
+        // movie 엔티티 저장
+        movieRepository.save(movie);
+
+        // MovieDetails 엔티티 생성 및 저장
+        MovieDetails movieDetails = new MovieDetails();
+        movieDetails.setMovie(movie); // movie와의 관계 설정
+        movieDetails.setOverview(overview);
+        movieDetails.setPosterPath(posterPath);
+        movieDetails.setRating(rating);
+        movieDetails.setReleaseDate(releaseDate);
+
+        movieDetailsRepository.save(movieDetails); // movieDetails 저장
+
+        return "redirect:/"; // 적절한 리다이렉트 경로 설정
     }
 
 
@@ -124,7 +159,6 @@ public class MovieController {
     }
 
 
-
     // TMDB에서 영화 정보를 가져오는 메서드
     private MovieDTO fetchMovieDataFromTMDB(Long movieId) {
         String url = String.format(
@@ -134,28 +168,43 @@ public class MovieController {
         return restTemplate.getForObject(url, MovieDTO.class);
     }
 
-    private void saveOrUpdateMovie(Long movieId, MovieDTO movieData) {
-        Optional<Movie> existingMovie = movieRepository.findById(movieId);
-        Movie movie;
-        if (existingMovie.isPresent()) {
-            movie = existingMovie.get();
-        } else {
-            movie = new Movie();
-            movie.setId(movieId); // 새로운 Movie 객체에 ID 설정
-        }
-        movie.setTitle(movieData.getTitle());
-        movie.setReleaseDate(movieData.getReleaseDate().substring(0, 4));
-        movieRepository.save(movie);
+    @Transactional
+    public void updateMovie(Long movieId, MovieDTO movieData) {
+        // Movie 엔티티 조회 (없으면 예외 발생)
+        Movie movie = movieRepository.findById(movieId).orElseThrow(() ->
+                new IllegalArgumentException("Movie not found with ID: " + movieId));
 
-        // MovieDetails 생성 또는 업데이트
-        MovieDetails movieDetails = movie.getMovieDetails() != null ? movie.getMovieDetails() : new MovieDetails();
-        movieDetails.setMovie(movie);
+        // Movie 엔티티 필드 업데이트
+        movie.setTitle(movieData.getTitle());
+        movie.setReleaseDate(movieData.getReleaseDate());
+
+        // MovieDetails 업데이트
+        MovieDetails movieDetails = movie.getMovieDetails();
+        if (movieDetails == null) {
+            movieDetails = new MovieDetails();
+            movieDetails.setMovie(movie); // Movie와의 관계 설정
+        }
         movieDetails.setOverview(movieData.getOverview());
         movieDetails.setPosterPath(movieData.getPosterPath());
-        movieDetails.setReleaseDate(movieData.getReleaseDate().substring(0, 4));
         movieDetails.setRating(movieData.getRating());
+        movieDetails.setReleaseDate(movieData.getReleaseDate());
 
-        movieDetailsRepository.save(movieDetails);
+        // 연관 관계 설정
+        movie.setMovieDetails(movieDetails);
+
+        // 저장
+        movieRepository.save(movie);
     }
 
+
+
+
 }
+
+
+
+
+
+
+
+

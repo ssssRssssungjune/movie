@@ -16,9 +16,9 @@ body {
 
 .container {
     padding: 20px;
-    width: 100%; /* 전체 너비를 사용하도록 설정 */
-    max-width: 1200px; /* 최대 너비 제한 */
-    margin: 0 auto; /* 가운데 정렬 */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 header {
@@ -74,14 +74,13 @@ header h1 {
     margin-bottom: 20px;
 }
 
-.movie-grid,
 .movie-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     padding: 10px;
-    width: 100%; /* 부모 컨테이너 너비에 맞추기 */
-    margin: 0 auto; /* 가운데 정렬 */
+    margin: 0 auto;
+    width: 100%;
 }
 
 .movie-card {
@@ -137,5 +136,100 @@ header h1 {
 .close {
     float: right;
     font-size: 24px;
+    cursor: pointer;
+}
+
+/* 검색 컨테이너 스타일 */
+.search-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+/* 검색 결과 목록에 스크롤 추가 */
+.search-results {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+/* 각 영화 정보 스타일 */
+.search-results div {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+/* 기본 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #222;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* 포스터 이미지 스타일 */
+.movie-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.movie-poster {
+    width: 200px;
+    cursor: pointer;
+    border: 3px solid #333;
+    transition: transform 0.3s;
+}
+
+.movie-poster:hover {
+    transform: scale(1.05);
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none; /* 처음에는 숨김 */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: #333;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff;
+    text-decoration: none;
     cursor: pointer;
 }
