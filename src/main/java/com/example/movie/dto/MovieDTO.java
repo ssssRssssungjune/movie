@@ -1,7 +1,11 @@
 package com.example.movie.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class MovieDTO {
 
     private String title;
@@ -13,36 +17,6 @@ public class MovieDTO {
     @JsonProperty("release_date")
     private String releaseDate;
 
-    // Getter, Setter
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public String getPosterPath() {
-        return posterPath;
-    }
-
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
+    @JsonProperty("vote_average")
+    private Double rating;  // 평점 필드 추가
 }

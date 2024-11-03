@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영화 목록</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>영화 목록</h1>
+<div class="movie-list">
+    <th:block th:each="movie : ${movies}">
+        <div class="movie-card" th:data-title="${movie.title}">
+            <h2 th:text="${movie.title.length() > 10 ? movie.title.substring(0, 10) + '...' : movie.title}">영화 제목</h2>
+            <img th:src="${movie.movieDetails != null && movie.movieDetails.posterPath != null ? 'https://image.tmdb.org/t/p/w500/' + movie.movieDetails.posterPath : '/static/images/default-poster.png'}" alt="영화 포스터">
+            <p>개봉 연도: <span th:text="${movie.movieDetails != null ? movie.movieDetails.releaseDate : 'N/A'}">YYYY</span></p>
+            <p>평점: <span th:text="${movie.movieDetails != null ? movie.movieDetails.rating : 'N/A'}">0.0</span></p>
+            <p th:utext="${#strings.abbreviate(movie.movieDetails != null ? movie.movieDetails.overview : 'No description available.', 100)}">줄거리</p>
+
+            <!-- "찾아보기" 버튼을 클릭하면 모달이 열리도록 수정 -->
+            <button onclick="openSearchModal(this)">찾아보기</button>
+        </div>
+    </th:block>
+</div>
+
+<!-- 모달 창 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeSearchModal()">&times;</span>
+        <h2>영화 검색</h2>
+        <input type="text" id="searchQuery" placeholder="영화 제목 입력">
+        <button onclick="searchMovie()">검색</button>
+        <div id="searchResults"></div>
+    </div>
+</div>
+
+<script>
+    // 모달 창 열기
+    function openSearchModal(button) {
+        const title = $(button).closest('.movie-card').data('title');
+        $("#searchModal").show();
+        $("#searchQuery").val(title);  // 영화 제목을 기본값으로 설정
+        searchMovie();  // 기본 제목으로 바로 검색 실행
+    }
+
+    // 모달 창 닫기
+    function closeSearchModal() {
+        $("#searchModal").hide();
+        $("#searchResults").empty(); // 검색 결과 초기화
+        $("#searchQuery").val('');   // 검색어 초기화
+    }
+
+    // 영화 검색
+    function searchMovie() {
+        let query = $("#searchQuery").val();
+        if (query.length > 0) {
+            $.ajax({
+                url: "/movies/search/ajax",
+                type: "GET",
+                data: { query: query },
+                success: function(data) {
+                    $("#searchResults").html(data);
+                },
+                error: function() {
+                    $("#searchResults").html("<p>검색 중 오류가 발생했습니다.</p>");
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

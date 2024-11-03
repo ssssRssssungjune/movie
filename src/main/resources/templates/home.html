@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>홈 - 영화 서버</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>영화 서버</h1>
+    <p>폴더를 선택하여 영화 정보를 불러오세요!</p>
+  </header>
+
+  <section class="indexing-section">
+    <form action="/index" method="post">
+      <label for="directoryInput">인덱싱할 폴더 경로:</label>
+      <input type="text" id="directoryInput" name="directory" placeholder="폴더 경로를 입력하세요">
+      <button type="submit">폴더 인덱싱</button>
+    </form>
+  </section>
+
+  <section class="movie-section">
+    <h2>인덱싱된 영화 목록</h2>
+    <div class="movie-grid">
+      <!-- 여기에 인덱싱된 영화 목록이 표시됩니다 -->
+      <div class="movie-card">
+        <img src="sample-poster.jpg" alt="영화 포스터">
+        <h3>영화 제목</h3>
+        <p>개요: 영화 설명이 여기에 표시됩니다.</p>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

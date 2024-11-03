@@ -8,6 +8,9 @@ import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-    @Query("SELECT m FROM Movie m ORDER BY m.createdAt DESC")
-    List<Movie> findRecentMovies();
+    @Query("SELECT m FROM Movie m LEFT JOIN FETCH m.movieDetails")
+    List<Movie> findAllMoviesWithDetails();
+    boolean existsByTitleAndReleaseDate(String title, String releaseDate);
 }
+
+

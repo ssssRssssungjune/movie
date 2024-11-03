@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Movie Directory</title>
+</head>
+<body>
+<h1>Select Movie Directory</h1>
+
+<!-- 폴더 선택 -->
+<input type="file" id="directoryInput" webkitdirectory directory>
+<button onclick="submitDirectory()">Index Movies</button>
+
+<script>
+    function submitDirectory() {
+        const input = document.getElementById('directoryInput');
+        if (input.files.length === 0) {
+            alert("Please select a folder.");
+            return;
+        }
+
+        // 파일 경로 중 첫 번째 파일의 경로를 가져옴
+        const filePath = input.files[0].webkitRelativePath.split('/')[0];
+        const directoryPath = `Z:/${filePath}`; // 윈도우의 경우 적절히 경로 수정 가능
+
+        // 서버로 폴더 경로 전송
+        fetch('/api/movies/index', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `directoryPath=${encodeURIComponent(directoryPath)}`
+        }).then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+</body>
+</html>

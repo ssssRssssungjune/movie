@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영화 검색</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2>영화 검색</h2>
+<input type="text" id="movie-search-input" placeholder="영화 제목을 입력하세요">
+<div id="search-results"></div>
+
+<script>
+    $(document).ready(function() {
+        $("#movie-search-input").on("input", function() {
+            let query = $(this).val();
+            if (query.length > 2) { // 2글자 이상일 때만 검색
+                $.ajax({
+                    url: "/movies/search/ajax",
+                    type: "GET",
+                    data: { query: query },
+                    success: function(data) {
+                        $("#search-results").html(data);
+                    },
+                    error: function() {
+                        $("#search-results").html("<p>검색 중 오류가 발생했습니다.</p>");
+                    }
+                });
+            } else {
+                $("#search-results").empty(); // 입력이 2글자 미만일 때 결과 비움
+            }
+        });
+    });
+</script>
+</body>
+</html>
